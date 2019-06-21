@@ -1,15 +1,16 @@
 import 'package:flutter_hacker_news/src/article.dart';
+import 'package:flutter_hacker_news/src/serializers.dart';
 import 'dart:convert' as convert;
 
 // https://hacker-news.firebaseio.com/v0/topstories.json
-List<int> parseTopStories(String json) {
-  final parsed = convert.jsonDecode(json);
+List<int> parseTopStories(String jsonStr) {
+  final parsed = convert.jsonDecode(jsonStr);
   return List<int>.from(parsed);
 }
 
 // https://hacker-news.firebaseio.com/v0/item/8863.json
-Article parseArticle(String json) {
-  final parsed = convert.jsonDecode(json);
-  Article article = Article.fromJson(parsed);
+Article parseArticle(String jsonStr) {
+  final parsed = convert.jsonDecode(jsonStr);
+  Article article = serializers.deserializeWith(Article.serializer, parsed);
   return article;
 }

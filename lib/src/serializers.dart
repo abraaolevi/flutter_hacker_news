@@ -11,7 +11,7 @@ import 'article.dart';
 part 'serializers.g.dart';
 
 @SerializersFor(const [
-  Article
+    Article
 ])
 final Serializers serializers =
-  (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+    (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();

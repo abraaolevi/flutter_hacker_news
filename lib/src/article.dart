@@ -11,21 +11,49 @@ import 'serializers.dart';
 part 'article.g.dart';
 
 abstract class Article implements Built<Article, ArticleBuilder> {
-
   int get id;
+
+  @nullable
   bool get deleted;
-  String get type; // "job", "story", "comment", "poll", or "pollopt".
+
+  // "job", "story", "comment", "poll", or "pollopt".
+  @nullable
+  String get type;
+
+  @nullable
   String get by;
+
+  @nullable
   int get time;
+
+  @nullable
   String get text;
+
+  @nullable
   bool get dead;
+
+  @nullable
   int get parent;
+
+  @nullable
   int get poll;
+
+  @nullable
   BuiltList<int> get kids;
+
+  @nullable
   String get url;
+
+  @nullable
   int get score;
+
+  @nullable
   String get title;
+
+  @nullable
   BuiltList<int> get parts;
+
+  @nullable
   int get descendants;
 
   Article._();
@@ -37,8 +65,9 @@ abstract class Article implements Built<Article, ArticleBuilder> {
   }
 
   static Article fromJson(String jsonString) {
-    return serializers.deserializeWith(Article.serializer, json.decode(jsonString));
+    return serializers.deserializeWith(
+        Article.serializer, json.decode(jsonString));
   }
 
-  static Serializer<Article> get serializer =>  _$articleSerializer;
+  static Serializer<Article> get serializer => _$articleSerializer;
 }
