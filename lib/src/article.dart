@@ -16,7 +16,8 @@ abstract class Article implements Built<Article, ArticleBuilder> {
   @nullable
   bool get deleted;
 
-  // "job", "story", "comment", "poll", or "pollopt".
+  /// This is the type of article.
+  /// It can be any of these: "job", "story", "comment", "poll", or "pollopt".
   @nullable
   String get type;
 
