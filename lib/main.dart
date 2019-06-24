@@ -46,15 +46,31 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: StreamBuilder<UnmodifiableListView<Article>>(
-            stream: widget.bloc.articles,
-            initialData: UnmodifiableListView<Article>([]),
-            builder: (BuildContext context, snapshot) => ListView(
-                  children: snapshot.data.map(_buildItem).toList(),
-                )));
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: StreamBuilder<UnmodifiableListView<Article>>(
+          stream: widget.bloc.articles,
+          initialData: UnmodifiableListView<Article>([]),
+          builder: (BuildContext context, snapshot) => ListView(
+                children: snapshot.data.map(_buildItem).toList(),
+              )),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.arrow_upward), title: Text('Top Stories')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.new_releases), title: Text('New Stories'))
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            widget.bloc.storiesType.add(StoriesType.topStories);
+          } else {
+            widget.bloc.storiesType.add(StoriesType.newStories);
+          }
+        },
+      ),
+    );
   }
 
   Widget _buildItem(Article article) {
