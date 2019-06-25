@@ -43,6 +43,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var _pageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: snapshot.data.map(_buildItem).toList(),
               )),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _pageIndex,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.arrow_upward), title: Text('Top Stories')),
@@ -63,6 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.new_releases), title: Text('New Stories'))
         ],
         onTap: (index) {
+          setState(() {
+            _pageIndex = index;
+          });
           if (index == 0) {
             widget.bloc.storiesType.add(StoriesType.topStories);
           } else {
