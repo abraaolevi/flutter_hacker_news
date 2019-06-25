@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter_hacker_news/json_parsing.dart';
+
 import 'article.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
@@ -21,32 +23,21 @@ class HackerNewsBloc {
 
   final _storiesTypeController = StreamController<StoriesType>();
 
-  static List<int> _topStoriesIds = [
-    20246258,
-    20246779,
-    20245913,
-    20245672,
-    20246665,
-  ];
-
-  static List<int> _newStoriesIds = [
-    20240900,
-    20244287,
-    20247077,
-    20244961,
-    20244459,
-  ];
-
   HackerNewsBloc() {
-    _getArticlesAndUpdate(_topStoriesIds);
+    _getStories(StoriesType.topStories);
 
     _storiesTypeController.stream.listen((storiesType) {
-      if (storiesType == StoriesType.newStories) {
-        _getArticlesAndUpdate(_newStoriesIds);
-      } else {
-        _getArticlesAndUpdate(_topStoriesIds);
-      }
+      _getStories(storiesType);
     });
+  }
+
+  _getStories(StoriesType storyType) async {
+    final jsonName = storyType == StoriesType.newStories ? 'newstories' : 'topstories';
+    final storyUrl = 'https://hacker-news.firebaseio.com/v0/$jsonName.json';
+    final storyResponse = await http.get(storyUrl);
+    final ids = parseTopStories(storyResponse.body);
+
+    _getArticlesAndUpdate(ids);
   }
 
   _getArticlesAndUpdate(List<int> ids) {
