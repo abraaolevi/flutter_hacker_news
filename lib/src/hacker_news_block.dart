@@ -23,6 +23,10 @@ class HackerNewsBloc {
 
   final _storiesTypeController = StreamController<StoriesType>();
 
+  var _topStoriesIds = List<int>();
+  var _newStoriesIds = List<int>();
+  var _cacheArticles = Map<int, Article>();
+
   HackerNewsBloc() {
     _getStories(StoriesType.topStories);
 
@@ -32,10 +36,27 @@ class HackerNewsBloc {
   }
 
   _getStories(StoriesType storyType) async {
-    final jsonName = storyType == StoriesType.newStories ? 'newstories' : 'topstories';
-    final storyUrl = 'https://hacker-news.firebaseio.com/v0/$jsonName.json';
-    final storyResponse = await http.get(storyUrl);
-    final ids = parseTopStories(storyResponse.body);
+
+    List<int> ids;
+
+    if ((storyType == StoriesType.newStories && _newStoriesIds.isNotEmpty) 
+    || (storyType == StoriesType.topStories && _topStoriesIds.isNotEmpty)) {
+      
+      ids = storyType == StoriesType.newStories ? _newStoriesIds : _topStoriesIds;
+
+    } else {
+      final jsonName = storyType == StoriesType.newStories ? 'newstories' : 'topstories';
+      final storyUrl = 'https://hacker-news.firebaseio.com/v0/$jsonName.json';
+      final storyResponse = await http.get(storyUrl);
+      
+      ids = parseTopStories(storyResponse.body);
+
+      if (storyType == StoriesType.newStories) {
+        _newStoriesIds = ids;
+      } else {
+        _topStoriesIds = ids;
+      }
+    }
 
     _getArticlesAndUpdate(ids);
   }
@@ -47,9 +68,13 @@ class HackerNewsBloc {
   }
 
   Future<Article> _getArticle(int id) async {
-    final itemUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
-    final itemResponse = await http.get(itemUrl);
-    return Article.fromJson(itemResponse.body);
+    if (_cacheArticles[id] == null) {
+      final itemUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
+      final itemResponse = await http.get(itemUrl);
+      _cacheArticles[id] = Article.fromJson(itemResponse.body);
+    }
+
+    return _cacheArticles[id];
   }
 
   Future<Null> _updateArticles(List<int> articlesIds) async {
