@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter_hacker_news/json_parsing.dart';
 
-import 'article.dart';
+import 'package:flutter_hacker_news/model/article.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 

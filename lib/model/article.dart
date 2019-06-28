@@ -8,7 +8,7 @@ import 'package:built_value/serializer.dart';
 
 import 'serializers.dart';
 
-part 'article.g.dart';
+part 'package:flutter_hacker_news/model/article.g.dart';
 
 abstract class Article implements Built<Article, ArticleBuilder> {
   int get id;

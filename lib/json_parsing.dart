@@ -1,5 +1,5 @@
-import 'package:flutter_hacker_news/src/article.dart';
-import 'package:flutter_hacker_news/src/serializers.dart';
+import 'package:flutter_hacker_news/model/article.dart';
+import 'package:flutter_hacker_news/model/serializers.dart';
 import 'dart:convert' as convert;
 
 // https://hacker-news.firebaseio.com/v0/topstories.json

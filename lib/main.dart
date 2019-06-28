@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news/src/hacker_news_block.dart';
+import 'package:flutter_hacker_news/src/hacker_news_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_hacker_news/src/article.dart';
+import 'package:flutter_hacker_news/model/article.dart';
 
 void main() {
   final hnBloc = HackerNewsBloc();
