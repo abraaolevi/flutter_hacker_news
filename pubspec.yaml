@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  dio: ^2.1.7
+  bloc_pattern: ^2.2.2+3
   flutter:
     sdk: flutter
 
@@ -33,6 +35,7 @@ dependencies:
   rxdart: ^0.22.0
 
 dev_dependencies:
+  mockito: ^4.1.0
   flutter_test:
     sdk: flutter
 
