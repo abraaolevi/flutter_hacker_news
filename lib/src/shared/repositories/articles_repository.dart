@@ -11,11 +11,11 @@ class ArticlesRepository extends Disposable {
   }
 
   Future<List<Article>> getArticles(StoriesType type) async {
-    List<Article> response = [];
+    var response = List<Article>();
 
-    List<int> storiesIds = await _api.fetchArticlesStories(type);
+    var storiesIds = await _api.fetchArticlesStories(type);
     for (int id in storiesIds) {
-      Article article = await getArticle(id);
+      var article = await getArticle(id);
       response.add(article);
     }
 
@@ -24,7 +24,7 @@ class ArticlesRepository extends Disposable {
 
   Future<Article> getArticle(int id) async {
     if (_articlesCache[id] == null) {
-      Article article = await _api.fetchArticle(id);
+      var article = await _api.fetchArticle(id);
       _articlesCache[id] = article;
     }
     return _articlesCache[id];
