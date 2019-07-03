@@ -4,21 +4,29 @@ import 'package:flutter_hacker_news/src/shared/models/article.dart';
 
 class ArticlesRepository extends Disposable {
   ApiProvider _api;
+  Map<String, List<int>> _storiesIdCache = {};
   Map<int, Article> _articlesCache = {};
 
   ArticlesRepository({ApiProvider api}) {
     this._api = api ?? ApiProvider();
   }
 
-  Future<List<Article>> getArticles(StoriesType type) async {
-    var response = List<Article>();
+  List<int> _paginate (List<int> array, int pageNumber, int perPage) {
+    --pageNumber;
+    return array.sublist(pageNumber * perPage, (pageNumber + 1) * perPage);
+  }
 
-    var storiesIds = await _api.fetchArticlesStories(type);
+  Future<List<Article>> getArticles(StoriesType type, int page) async {
+    final response = List<Article>();
 
-    // TEMP
-    storiesIds = storiesIds.sublist(0,10);
+    if (_storiesIdCache[type.toString()] == null) {
+        _storiesIdCache[type.toString()] = await _api.fetchArticlesStories(type);
+    }
+    
+    final storiesIds = _storiesIdCache[type.toString()];
+    final itemsPerPage = 10;
 
-    for (int id in storiesIds) {
+    for (int id in _paginate(storiesIds, page, itemsPerPage)) {
       var article = await getArticle(id);
       response.add(article);
     }

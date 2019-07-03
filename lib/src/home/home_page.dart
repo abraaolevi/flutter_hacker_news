@@ -1,4 +1,3 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hacker_news/src/home/home_bloc.dart';
 import 'package:flutter_hacker_news/src/home/home_module.dart';
@@ -20,25 +19,38 @@ class _HomePageState extends State<HomePage> {
         title: Text("Hacker News"),
       ),
       body: StreamBuilder(
-        stream: bloc.isLoadingStream,
+        stream: bloc.isLoading,
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (snapshot.data) {
-              return CircleAvatar();
+            if (!snapshot.hasData || snapshot.data) {
+              return Center(child: CircularProgressIndicator());
             }
-            return StreamBuilder(
-                stream: bloc.articleStream,
-                builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text("Carregando");
-                  }
-                  return _articlesListView(snapshot.data);
-                },
-              );
+            return ArticlesListView(bloc: bloc);
         },
       )
-      
-      
     );
+  }
+}
+
+class ArticlesListView extends StatelessWidget {
+
+  const ArticlesListView({
+    Key key,
+    @required this.bloc,
+  }) : super(key: key);
+
+  final HomeBloc bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: bloc.articles,
+        builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
+          if (snapshot.hasData) {
+            return _articlesListView(snapshot.data);
+          }
+          return Container();
+        },
+      );
   }
 
   ListView _articlesListView(List<Article> articles) {

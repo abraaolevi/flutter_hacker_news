@@ -7,33 +7,46 @@ import 'package:rxdart/rxdart.dart';
 
 class HomeBloc extends BlocBase {
 
-  ArticlesRepository _articlesRepository = ArticlesRepository();
+  ArticlesRepository _articlesRepository;
 
-  // HomeBloc(ArticlesRepository articlesRepository) {
-  //   this._articlesRepository = articlesRepository;
-  //   this.start();
-  // }
+  HomeBloc({ArticlesRepository articlesRepo}) {
+    this._articlesRepository = articlesRepo;
+    this.start();
 
-  HomeBloc() {
-    start();
+    _pageController.stream.listen((_) {
+      start();
+    });
   }
 
-  var _articlesController = BehaviorSubject<List<Article>>.seeded([]);
-  Stream<List<Article>> get articleStream => _articlesController.stream;
+  final _articlesController = BehaviorSubject<List<Article>>.seeded([]);
+  Stream<List<Article>> get articles => _articlesController.stream;
   
-  var _isLoadingController = BehaviorSubject<bool>.seeded(false);
-  Stream<bool> get isLoadingStream => _isLoadingController.stream;
+  final _isLoadingController = BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get isLoading => _isLoadingController.stream;
+
+  final _pageController = BehaviorSubject<int>.seeded(1);
 
   start() async {
     _isLoadingController.sink.add(true);
-    var response = await _articlesRepository.getArticles(StoriesType.newStories);
+
+    final currentPage = _pageController.stream.value;
+    final response = await _articlesRepository.getArticles(StoriesType.newStories, currentPage);
     _articlesController.sink.add(response);
+
     _isLoadingController.sink.add(false);
+  }
+
+  nextPage() {
+    final currentPage = _pageController.stream.value;
+    _pageController.sink.add(currentPage + 1);
   }
 
   //dispose will be called automatically by closing its streams
   @override
   void dispose() {
     super.dispose();
+    _articlesController.close();
+    _isLoadingController.close();
+    _pageController.close();
   }
 }
