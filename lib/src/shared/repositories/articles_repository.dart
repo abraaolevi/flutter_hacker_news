@@ -14,6 +14,10 @@ class ArticlesRepository extends Disposable {
     var response = List<Article>();
 
     var storiesIds = await _api.fetchArticlesStories(type);
+
+    // TEMP
+    storiesIds = storiesIds.sublist(0,10);
+
     for (int id in storiesIds) {
       var article = await getArticle(id);
       response.add(article);
