@@ -41,19 +41,21 @@ void main() async {
     expect(2, article.id);
   });
 
-  test('test getArticles new stories ', () async {
-    final articles = await repo.getArticles(StoriesType.newStories);
+  test('test getArticles new stories', () async {
+    final articles = await repo.getArticles(StoriesType.newStories, 1);
 
     expect(articles, isInstanceOf<List<Article>>());
     expect(articles.length, 1);
     expect(articles.first.id, 1);
   });
 
-  test('test getArticles top stories ', () async {
-    final articles = await repo.getArticles(StoriesType.topStories);
+  test('test getArticles top stories', () async {
+    final articles = await repo.getArticles(StoriesType.topStories, 1);
 
     expect(articles, isInstanceOf<List<Article>>());
     expect(articles.length, 1);
     expect(articles.first.id, 2);
   });
+
+  
 }
