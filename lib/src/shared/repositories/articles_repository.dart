@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter_hacker_news/src/shared/api_provider.dart';
 import 'package:flutter_hacker_news/src/shared/models/article.dart';
+import 'package:flutter_hacker_news/src/shared/utils/paginate.dart';
 
 class ArticlesRepository extends Disposable {
   ApiProvider _api;
@@ -9,11 +10,6 @@ class ArticlesRepository extends Disposable {
 
   ArticlesRepository({ApiProvider api}) {
     this._api = api ?? ApiProvider();
-  }
-
-  List<int> _paginate (List<int> array, int pageNumber, int perPage) {
-    --pageNumber;
-    return array.sublist(pageNumber * perPage, (pageNumber + 1) * perPage);
   }
 
   Future<List<Article>> getArticles(StoriesType type, int page) async {
@@ -26,7 +22,9 @@ class ArticlesRepository extends Disposable {
     final storiesIds = _storiesIdCache[type.toString()];
     final itemsPerPage = 10;
 
-    for (int id in _paginate(storiesIds, page, itemsPerPage)) {
+    final paginete = Paginate<int>(storiesIds, page, itemsPerPage); 
+
+    for (int id in paginete.data) {
       var article = await getArticle(id);
       response.add(article);
     }
