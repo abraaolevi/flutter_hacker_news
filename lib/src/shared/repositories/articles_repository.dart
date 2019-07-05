@@ -16,15 +16,16 @@ class ArticlesRepository extends Disposable {
     final response = List<Article>();
 
     if (_storiesIdCache[type.toString()] == null) {
-        _storiesIdCache[type.toString()] = await _api.fetchArticlesStories(type);
+      _storiesIdCache[type.toString()] = await _api.fetchArticlesStories(type);
     }
-    
+
     final storiesIds = _storiesIdCache[type.toString()];
     final itemsPerPage = 10;
 
-    final paginete = Paginate<int>(storiesIds, page, itemsPerPage); 
+    final paginete =
+        Paginate<int>(items: storiesIds, page: page, perPage: itemsPerPage);
 
-    for (int id in paginete.data) {
+    for (int id in paginete.items) {
       var article = await getArticle(id);
       response.add(article);
     }

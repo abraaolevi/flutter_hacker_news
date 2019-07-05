@@ -1,21 +1,20 @@
-
 class Paginate<T> {
   final int page;
   final int perPage;
-  
+
   int _totalItems;
   int get totalItems => _totalItems;
 
   int _totalPages;
   int get totalPages => _totalPages;
 
-  List<T> _data;
-  List<T> get data => _data;
+  List<T> _items;
+  List<T> get items => _items;
 
-  Paginate(List<T> items, this.page, this.perPage) {
+  Paginate({List<T> items, this.page, this.perPage}) {
     this._totalItems = items.length;
-    this._totalPages = _getTotalPages(); 
-    this._data = _getData(items);    
+    this._totalPages = _getTotalPages();
+    this._items = _getData(items);
   }
 
   int _getTotalPages() {
@@ -35,4 +34,3 @@ class Paginate<T> {
     return paginated.sublist(0, perPage);
   }
 }
-
