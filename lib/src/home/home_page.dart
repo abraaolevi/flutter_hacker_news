@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hacker_news/src/home/home_bloc.dart';
 import 'package:flutter_hacker_news/src/home/home_module.dart';
 import 'package:flutter_hacker_news/src/shared/models/article.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -73,6 +74,10 @@ class _HomePageState extends State<HomePage> {
     return ListTile(
       title: Text(article.title),
       subtitle: Text(article.type),
+      trailing: Icon(Icons.launch),
+      onTap: () {
+        launch(article.url);
+      },
     );
   }
 }
