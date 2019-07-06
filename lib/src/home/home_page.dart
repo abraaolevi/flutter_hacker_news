@@ -9,53 +9,63 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final HomeBloc bloc = HomeModule.to.bloc<HomeBloc>();
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Hacker News"),
-      ),
-      body: StreamBuilder(
-        stream: bloc.isLoading,
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        appBar: AppBar(
+          title: Text("Hacker News"),
+        ),
+        body: StreamBuilder(
+          stream: bloc.isLoading,
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             if (!snapshot.hasData || snapshot.data) {
               return Center(child: CircularProgressIndicator());
             }
-            return ArticlesListView(bloc: bloc);
-        },
-      )
-    );
+
+            return NotificationListener<ScrollNotification>(
+                onNotification: _handleScrollNotification,
+                child: StreamBuilder(
+                  stream: bloc.articles,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Article>> snapshot) {
+                    if (snapshot.hasData) {
+                      return _articlesListView(snapshot.data);
+                    }
+                    return Container();
+                  },
+                ));
+
+            // return ArticlesListView(bloc: bloc);
+          },
+        ));
   }
-}
 
-class ArticlesListView extends StatelessWidget {
-
-  const ArticlesListView({
-    Key key,
-    @required this.bloc,
-  }) : super(key: key);
-
-  final HomeBloc bloc;
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: bloc.articles,
-        builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
-          if (snapshot.hasData) {
-            return _articlesListView(snapshot.data);
-          }
-          return Container();
-        },
-      );
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification &&
+        _scrollController.position.extentAfter == 0) {
+      bloc.nextPage();
+    }
+    return false;
   }
 
   ListView _articlesListView(List<Article> articles) {
     return ListView(
-      children: articles.map((article) => _articleCell(article)).toList(),
+      children: [
+        ...articles.map((article) => _articleCell(article)).toList(),
+        Center(
+          child: CircularProgressIndicator(),
+        )
+      ],
+      controller: _scrollController,
     );
   }
 

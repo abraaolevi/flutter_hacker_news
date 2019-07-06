@@ -11,27 +11,30 @@ class HomeBloc extends BlocBase {
 
   HomeBloc({ArticlesRepository articlesRepo}) {
     this._articlesRepository = articlesRepo;
-    this.start();
-
     _pageController.stream.listen((_) {
-      start();
+      loadData();
     });
   }
+
+  List<Article> _articles = [];
 
   final _articlesController = BehaviorSubject<List<Article>>.seeded([]);
   Stream<List<Article>> get articles => _articlesController.stream;
   
-  final _isLoadingController = BehaviorSubject<bool>.seeded(false);
+  final _isLoadingController = BehaviorSubject<bool>.seeded(true);
   Stream<bool> get isLoading => _isLoadingController.stream;
 
   final _pageController = BehaviorSubject<int>.seeded(1);
 
-  start() async {
-    _isLoadingController.sink.add(true);
+  loadData() async {
+    // Future.delayed(Duration(seconds: 3));
 
     final currentPage = _pageController.stream.value;
     final response = await _articlesRepository.getArticles(StoriesType.newStories, currentPage);
-    _articlesController.sink.add(response);
+
+    _articles = [..._articles, ...response];
+
+    _articlesController.sink.add(_articles);
 
     _isLoadingController.sink.add(false);
   }
