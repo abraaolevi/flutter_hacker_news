@@ -22,7 +22,7 @@ void main() {
     expect(paginate.totalPages, 3);
 
     paginate = Paginate(items: array, page: 4, perPage: 5);
-    expect(paginate.items.length, 1);
+    expect(paginate.items.length, 0);
     expect(paginate.items, []);
     expect(paginate.totalPages, 3);
   });

@@ -23,7 +23,7 @@ class Paginate<T> {
 
   List<T> _getData(List<T> items) {
     final offset = (page - 1) * perPage;
-    if (offset > _totalItems) {
+    if (offset < 0 || offset > _totalItems) {
       return [];
     }
     var paginated = items.sublist(offset);
