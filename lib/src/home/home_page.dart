@@ -13,10 +13,18 @@ class _HomePageState extends State<HomePage> {
   final HomeBloc bloc = HomeModule.to.bloc<HomeBloc>();
   final _scrollController = ScrollController();
 
+  int _tabCurrentIndex = 0;
+
   @override
   void initState() {
     super.initState();
     bloc.loadData();
+  }
+
+  void _onTapBottomNavigationBar(int index) {
+    setState(() {
+      _tabCurrentIndex = index;
+    });
   }
 
   @override
@@ -47,7 +55,22 @@ class _HomePageState extends State<HomePage> {
 
             // return ArticlesListView(bloc: bloc);
           },
-        ));
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _tabCurrentIndex,
+          onTap: _onTapBottomNavigationBar,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.arrow_upward), 
+              title: Text("Top Stories"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.new_releases), 
+              title: Text("New Stories"),
+            ),
+          ],
+        ),
+        );
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
