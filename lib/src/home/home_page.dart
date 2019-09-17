@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hacker_news/src/home/home_bloc.dart';
 import 'package:flutter_hacker_news/src/home/home_module.dart';
+import 'package:flutter_hacker_news/src/shared/api_provider.dart';
 import 'package:flutter_hacker_news/src/shared/models/article.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,6 +26,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _tabCurrentIndex = index;
     });
+
+    var type = (index == 0) ? StoriesType.topStories : StoriesType.newStories;
+    bloc.changeStoryType(type);
   }
 
   @override

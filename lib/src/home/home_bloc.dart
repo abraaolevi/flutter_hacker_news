@@ -16,7 +16,8 @@ class HomeBloc extends BlocBase {
     });
   }
 
-  List<Article> _articles = [];
+  var _currentStoryType = StoriesType.topStories;
+  final _articlesSource = _ArticlesSource();
 
   final _articlesController = BehaviorSubject<List<Article>>.seeded([]);
   Stream<List<Article>> get articles => _articlesController.stream;
@@ -30,11 +31,11 @@ class HomeBloc extends BlocBase {
     // Future.delayed(Duration(seconds: 3));
 
     final currentPage = _pageController.stream.value;
-    final response = await _articlesRepository.getArticles(StoriesType.newStories, currentPage);
+    final response = await _articlesRepository.getArticles(_currentStoryType, currentPage);
+    final articles = _articlesSource.appendArticles(_currentStoryType, response);
 
-    _articles = [..._articles, ...response];
-
-    _articlesController.sink.add(_articles);
+    // Set Articles to Stream
+    _articlesController.sink.add(articles);
 
     _isLoadingController.sink.add(false);
   }
@@ -44,6 +45,19 @@ class HomeBloc extends BlocBase {
     _pageController.sink.add(currentPage + 1);
   }
 
+  changeStoryType(StoriesType storyType) {
+    _currentStoryType = storyType;
+
+    final articles = _articlesSource.getArticles(_currentStoryType);
+
+    if (articles.length == 0) {
+      _isLoadingController.sink.add(true);
+      loadData();
+    } else {
+      _articlesController.sink.add(articles);
+    }
+  }
+
   //dispose will be called automatically by closing its streams
   @override
   void dispose() {
@@ -51,5 +65,22 @@ class HomeBloc extends BlocBase {
     _articlesController.close();
     _isLoadingController.close();
     _pageController.close();
+  }
+}
+
+class _ArticlesSource {
+  var _articles = Map<StoriesType, List<Article>>();
+
+  List<Article> getArticles(StoriesType type) {
+    if (_articles[type] == null) {
+      _articles[type] = [];
+    }
+    return _articles[type];
+  }
+
+  List<Article> appendArticles(StoriesType type, List<Article> newArticles) {
+    final articles = getArticles(type);
+    _articles[type] = [...articles, ...newArticles];
+    return _articles[type];
   }
 }
