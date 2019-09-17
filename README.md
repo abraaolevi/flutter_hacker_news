@@ -1,6 +1,8 @@
-# Flutter Hacker News App
+# Flutter HackerNews App
 
 A Flutter application, that uses [HackerNews API](https://github.com/HackerNews/API) to fetch stories.
+
+![image](https://user-images.githubusercontent.com/502058/65087645-eb6dc800-d98c-11e9-9fe5-5ce3533675bf.png)
 
 ## How to run?
 
