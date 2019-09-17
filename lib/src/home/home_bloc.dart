@@ -7,7 +7,26 @@ import 'package:rxdart/rxdart.dart';
 
 class HomeBloc extends BlocBase {
 
+  //
+  // Properties class
+  //
+
   ArticlesRepository _articlesRepository;
+
+  var _currentStoryType = StoriesType.topStories;
+  final _articlesSource = _ArticlesSource();
+
+  final _articlesController = BehaviorSubject<List<Article>>.seeded([]);
+  Stream<List<Article>> get articles => _articlesController.stream;
+
+  final _isLoadingController = BehaviorSubject<bool>.seeded(true);
+  Stream<bool> get isLoading => _isLoadingController.stream;
+
+  final _pageController = BehaviorSubject<int>.seeded(1);
+
+  //
+  // Constructor class
+  //
 
   HomeBloc({ArticlesRepository articlesRepo}) {
     this._articlesRepository = articlesRepo;
@@ -16,16 +35,9 @@ class HomeBloc extends BlocBase {
     });
   }
 
-  var _currentStoryType = StoriesType.topStories;
-  final _articlesSource = _ArticlesSource();
-
-  final _articlesController = BehaviorSubject<List<Article>>.seeded([]);
-  Stream<List<Article>> get articles => _articlesController.stream;
-  
-  final _isLoadingController = BehaviorSubject<bool>.seeded(true);
-  Stream<bool> get isLoading => _isLoadingController.stream;
-
-  final _pageController = BehaviorSubject<int>.seeded(1);
+  //
+  // Public methods
+  //
 
   loadData() async {
     // Future.delayed(Duration(seconds: 3));
@@ -58,7 +70,7 @@ class HomeBloc extends BlocBase {
     }
   }
 
-  //dispose will be called automatically by closing its streams
+  // dispose will be called automatically by closing its streams
   @override
   void dispose() {
     super.dispose();
